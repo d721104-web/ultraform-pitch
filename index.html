@@ -7,12 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* 引入極具科技感與幾何感的 Space Grotesk 字體 */
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
         
         body {
             font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
             background-color: #f8fafc; /* slate-50 */
+            overflow-x: hidden;
         }
         
         .hero-pattern {
@@ -24,7 +24,7 @@
         }
         .mesh-bg {
             background-color: #ffffff;
-            /* 量子青與科技藍的微光漸層，暗示純淨水質與科技 */
+            /* 量子青與科技藍的微光漸層 */
             background-image: radial-gradient(at 40% 20%, hsla(190, 100%, 50%, 0.05) 0px, transparent 50%),
                               radial-gradient(at 80% 0%, hsla(220, 100%, 60%, 0.04) 0px, transparent 50%),
                               radial-gradient(at 0% 50%, hsla(0, 0%, 90%, 0.1) 0px, transparent 50%);
@@ -37,33 +37,89 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        /* ESG 報告書預覽的紙張特效 */
         .paper-shadow {
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), -10px 0 15px -3px rgba(0,0,0,0.02);
         }
+        
+        #mobile-menu {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        #mobile-menu.open {
+            max-height: 400px;
+            opacity: 1;
+        }
+        
+        /* FAQ Animation */
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .faq-item.open .faq-a {
+            max-height: 400px;
+            padding-bottom: 20px;
+        }
+        .faq-icon { transition: transform 0.3s ease; }
+        .faq-item.open .faq-icon { transform: rotate(45deg); background-color: #0f172a; color: #fff; border-color: #0f172a;}
+        
+        /* Scroll Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-up.visible { opacity: 1; transform: none; }
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-cyan-400 selection:text-slate-950">
 
-    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/85 backdrop-blur-md shadow-sm border-b border-slate-200">
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/85 backdrop-blur-md shadow-sm border-b border-slate-200" id="navbar">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center shadow-lg shadow-cyan-500/20">
                         <i class="fa-solid fa-layer-group text-cyan-400 text-xl"></i>
                     </div>
                     <span class="font-bold text-2xl tracking-tighter text-slate-950">ULTRAFORM<span class="text-cyan-500">.</span></span>
                 </div>
-                <div class="hidden lg:flex space-x-6 text-sm font-bold text-slate-500">
-                    <a href="#context" class="hover:text-cyan-600 transition">痛點與護城河</a>
+                
+                <!-- Desktop Links -->
+                <div class="hidden lg:flex space-x-8 text-sm font-bold text-slate-600">
+                    <a href="#pain-points" class="hover:text-cyan-600 transition">痛點與優缺點</a>
+                    <a href="#moat" class="hover:text-cyan-600 transition">科技護城河</a>
                     <a href="#esg-saas" class="hover:text-cyan-600 transition">ESG 數位合規</a>
                     <a href="#market" class="hover:text-cyan-600 transition">高階 B2B 目標</a>
-                    <a href="#partnership" class="text-cyan-600 hover:text-cyan-700 transition flex items-center gap-1"><i class="fa-solid fa-handshake"></i> 生態系合夥人</a>
+                    <a href="#partnership" class="text-cyan-600 hover:text-cyan-700 transition flex items-center gap-1.5"><i class="fa-solid fa-handshake"></i> 生態系合夥人</a>
                 </div>
-                <a href="#partnership" class="hidden md:flex items-center gap-2 px-6 py-2.5 bg-slate-950 text-white font-bold text-sm rounded-full hover:bg-cyan-400 hover:text-slate-950 transition shadow-lg shadow-slate-500/20">
-                    <span>加入聯合艦隊</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
+                
+                <!-- CTA & Mobile Toggle -->
+                <div class="flex items-center gap-4">
+                    <a href="#contact" class="hidden md:flex items-center gap-2 px-6 py-2.5 bg-slate-950 text-white font-bold text-sm rounded-full hover:bg-cyan-400 hover:text-slate-950 transition shadow-lg shadow-slate-500/20">
+                        <span>加入聯合艦隊</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <button id="mobile-toggle" class="lg:hidden text-slate-600 text-2xl focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden bg-white border-t border-slate-100 px-6">
+            <div class="flex flex-col py-4 space-y-4 text-sm font-bold text-slate-600">
+                <a href="#pain-points" class="mobile-link">痛點與優缺點</a>
+                <a href="#moat" class="mobile-link">科技護城河</a>
+                <a href="#esg-saas" class="mobile-link">ESG 數位合規</a>
+                <a href="#market" class="mobile-link">高階 B2B 目標</a>
+                <a href="#partnership" class="mobile-link text-cyan-600">生態系合夥人</a>
+                <a href="#contact" class="mobile-link bg-slate-950 text-white text-center py-3 rounded-lg mt-2">預約提案會議</a>
             </div>
         </div>
     </nav>
@@ -71,19 +127,21 @@
     <section class="hero-pattern min-h-screen flex items-center pt-20 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-950/80"></div>
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12 py-20">
-            <div class="lg:w-3/5 space-y-8">
-                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-white text-xs font-bold tracking-widest backdrop-blur-md">
+            
+            <!-- Left: Typography & CTA -->
+            <div class="lg:w-[55%] space-y-8">
+                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-white text-xs font-bold tracking-widest backdrop-blur-md fade-up">
                     <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]"></span>
                     RED DOT AWARD 2026 認證技術
                 </div>
-                <h1 class="text-5xl lg:text-7xl font-black text-white leading-[1.15] tracking-tight">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-white leading-[1.15] tracking-tight fade-up stagger-1">
                     不只是永續制服，<br>更是您可被查核的 <br>
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">ESG 減碳附錄。</span>
                 </h1>
-                <p class="text-xl text-slate-300 font-light leading-relaxed max-w-2xl">
+                <p class="text-lg sm:text-xl text-slate-300 font-light leading-relaxed max-w-2xl fade-up stagger-2">
                     全球首創 <strong class="text-white font-bold">CUaaS (企業零廢棄制服系統)</strong>。結合東豐纖維 100% 單一材質專利與無氟防潑水黑科技，為上市櫃企業提供「實體高端制服 + ISO 14067 合規文件 + 年底期末閉環回收」的終極解決方案。
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                <div class="flex flex-col sm:flex-row gap-4 pt-4 fade-up stagger-2">
                     <a href="#esg-saas" class="px-8 py-4 bg-cyan-400 text-slate-950 font-bold rounded-full hover:bg-cyan-300 transition shadow-lg shadow-cyan-400/20 flex items-center justify-center gap-2 text-lg">
                         預覽 ESG 稽核報告 <i class="fa-solid fa-file-pdf"></i>
                     </a>
@@ -93,99 +151,299 @@
                 </div>
             </div>
             
-            <div class="hidden lg:block lg:w-2/5 perspective-1000">
+            <!-- Right: 3D Perspective Glass Cards -->
+            <div class="hidden lg:block lg:w-[45%] perspective-1000 fade-up stagger-1">
                 <div class="relative w-full h-[500px]">
-                    <!-- 單一材質卡片 -->
-                    <div class="absolute right-0 top-10 w-72 bg-white rounded-2xl shadow-2xl p-6 transform rotate-6 border border-slate-100 hover:rotate-0 transition duration-500 z-20">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                    <!-- Mono-Material Card -->
+                    <div class="absolute right-4 top-16 w-80 bg-white rounded-2xl shadow-2xl p-6 transform rotate-3 border border-slate-100 hover:rotate-0 transition duration-500 z-20">
+                        <div class="flex items-center gap-4 mb-5">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shadow-inner">
                                 <i class="fa-solid fa-recycle text-xl"></i>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-900">Mono-Material</h3>
-                                <p class="text-xs text-slate-500">100% PET，零拆解直接回收</p>
+                                <h3 class="font-bold text-slate-900 text-lg">Mono-Material</h3>
+                                <p class="text-xs font-mono text-slate-500 mt-0.5">100% PET, 零拆解直接回收</p>
                             </div>
                         </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2 mb-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 100%"></div></div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 mb-2 relative overflow-hidden">
+                            <div class="bg-blue-500 h-2.5 rounded-full absolute left-0 top-0" style="width: 100%"></div>
+                        </div>
                     </div>
 
-                    <!-- 無氟黑科技卡片 -->
-                    <div class="absolute left-10 top-40 w-72 bg-slate-900 rounded-2xl shadow-2xl p-6 transform -rotate-3 border border-slate-800 hover:rotate-0 transition duration-500 z-30">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-full bg-cyan-400/20 flex items-center justify-center text-cyan-400">
+                    <!-- PFAS-Free Card -->
+                    <div class="absolute left-0 top-48 w-80 bg-slate-900 rounded-2xl shadow-[0_25px_50px_-12px_rgba(34,211,238,0.25)] p-6 transform -rotate-6 border border-slate-700 hover:-rotate-2 transition duration-500 z-30">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 border border-cyan-500/30 shadow-inner">
                                 <i class="fa-solid fa-droplet text-xl"></i>
                             </div>
                             <div>
-                                <h3 class="font-bold text-white">PFAS-Free Tech</h3>
-                                <p class="text-xs text-slate-400">專利塗佈，合規且強效抗污</p>
+                                <h3 class="font-bold text-white text-lg">PFAS-Free Tech</h3>
+                                <p class="text-xs font-mono text-slate-400 mt-0.5">專利塗佈，合規且強效抗污</p>
                             </div>
                         </div>
-                        <div class="text-2xl font-black text-cyan-400">ULTRAFORM™</div>
+                        <div class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 tracking-tight">ULTRAFORM™</div>
                     </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <section id="philosophy" class="py-24 bg-slate-900 relative border-y border-slate-800 overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -ml-32 -mb-32 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-up">
+                <span class="text-cyan-400 font-bold tracking-widest text-sm uppercase">The Golden Circle</span>
+                <h2 class="text-3xl md:text-5xl font-black text-white mt-3 mb-6">從 WHY 開始的永續變革</h2>
+                <p class="text-lg text-slate-400 leading-relaxed">
+                    我們不僅製造制服，我們設計一套能徹底改變產業規則的作業系統。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Connecting Line for Desktop -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-500/20 via-cyan-400/50 to-blue-500/20 transform -translate-y-1/2 z-0"></div>
+
+                <!-- WHY -->
+                <div class="bg-slate-950/80 backdrop-blur-md rounded-3xl p-8 border border-slate-800 relative z-10 fade-up hover:-translate-y-2 transition-transform duration-300 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mb-6 mx-auto shadow-[0_0_15px_rgba(34,211,238,0.4)] border-4 border-slate-900">
+                        <span class="text-slate-950 font-black text-xl">W</span>
+                    </div>
+                    <h3 class="text-center text-xl font-bold text-white mb-2 tracking-widest">WHY <span class="text-cyan-400 font-medium text-sm block mt-1">我們的信念與初衷</span></h3>
+                    <p class="text-slate-400 text-sm leading-relaxed text-center mt-4">
+                        真正的永續，不該是買一件「號稱」環保的衣服，而是確保它最終不會進入焚化爐。我們存在的目的，是為了<strong>終結企業採購的綠洗（Greenwashing）</strong>，將消耗性預算轉化為對地球零負擔、可查核的真實 ESG 資產。
+                    </p>
+                </div>
+
+                <!-- HOW -->
+                <div class="bg-slate-950/80 backdrop-blur-md rounded-3xl p-8 border border-slate-800 relative z-10 fade-up stagger-1 hover:-translate-y-2 transition-transform duration-300 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+                    <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-6 mx-auto border-4 border-slate-900 relative">
+                        <div class="absolute inset-0 rounded-full border-2 border-cyan-500/50 border-dashed animate-[spin_4s_linear_infinite]"></div>
+                        <span class="text-white font-black text-xl">H</span>
+                    </div>
+                    <h3 class="text-center text-xl font-bold text-white mb-2 tracking-widest">HOW <span class="text-slate-400 font-medium text-sm block mt-1">我們如何實現它</span></h3>
+                    <p class="text-slate-400 text-sm leading-relaxed text-center mt-4">
+                        透過打造 <strong>CUaaS（企業零廢棄制服系統）</strong>。我們以極限的材料科學（100% 單一材質全聚酯 + 專利無氟防潑水）重構服裝物理限制，並結合數位履歷與逆向物流，建立一條無懈可擊的實體「衣到衣」回收閉環。
+                    </p>
+                </div>
+
+                <!-- WHAT -->
+                <div class="bg-slate-950/80 backdrop-blur-md rounded-3xl p-8 border border-cyan-900/50 relative z-10 fade-up stagger-2 hover:-translate-y-2 transition-transform duration-300 shadow-[0_0_30px_rgba(34,211,238,0.1)]">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 mx-auto border-4 border-slate-900">
+                        <span class="text-slate-950 font-black text-xl">W</span>
+                    </div>
+                    <h3 class="text-center text-xl font-bold text-white mb-2 tracking-widest">WHAT <span class="text-cyan-400 font-medium text-sm block mt-1">我們交付的結果</span></h3>
+                    <p class="text-slate-400 text-sm leading-relaxed text-center mt-4">
+                        我們向企業交付結合日式侘寂美學與紅點科技的高階制服（Tech Blazer / Lab Coat 等），並於年底透過 SaaS 系統，<strong>一鍵產出會計師認可的 ISO 14067 減碳附錄與造粒廠回收證明</strong>。
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 核心解決方案 / 護城河 -->
-    <section id="context" class="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden border-b border-slate-200">
+    <section id="pain-points" class="py-24 bg-white relative border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-up">
+                <span class="text-red-500 font-bold tracking-widest text-sm uppercase">The ESG Time Bomb</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-3 mb-6">為何企業制服是 ESG 財報的「定時炸彈」？</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    光買「環保材質」已經不夠。歐盟 EPR 與反綠洗法規明確要求產品的「期末去向」。無法回收的制服，將直接成為企業範疇三（Scope 3）的致命扣分項。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Pain 1 -->
+                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 fade-up hover:shadow-lg transition">
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-6 text-red-600 text-xl shadow-inner">
+                        <i class="fa-solid fa-recycle"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-950 mb-3">混紡與異材質 = 100% 焚化</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        傳統制服為了彈性與耐用，混紡棉、聚酯、彈性纖維（Spandex），加上金屬拉鍊與塑膠釦。這導致廢棄後「物理上無法分離」，人工剪除成本遠高於布料價值，最終只能全數進入焚化爐。
+                    </p>
+                </div>
+                <!-- Pain 2 -->
+                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 fade-up stagger-1 hover:shadow-lg transition">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-6 text-orange-600 text-xl shadow-inner">
+                        <i class="fa-solid fa-skull-crossbones"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-950 mb-3">防潑水塗層的 PFAS 毒性風險</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        市售抗污、防潑水制服多採用含氟化物（PFAS/永久化學品）的塗層。面對全球與歐盟即將全面封殺 PFAS，採購這類制服將使企業面臨嚴峻的法規違約與公關綠洗風險。
+                    </p>
+                </div>
+                <!-- Pain 3 -->
+                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 fade-up stagger-2 hover:shadow-lg transition">
+                    <div class="w-12 h-12 bg-slate-200 rounded-xl flex items-center justify-center mb-6 text-slate-600 text-xl shadow-inner">
+                        <i class="fa-solid fa-file-circle-xmark"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-950 mb-3">拿不出會計師認可的「回收證明」</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        企業採購了「環保紗」制服，卻在年底寫 ESG 報告時，提不出任何「舊衣真的被回收」的實體造粒證明與碳盤查數據，導致永續行動淪為缺乏證據的空談。
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-center fade-up">
+                <div class="inline-block bg-slate-950 text-white px-8 py-4 rounded-full font-bold shadow-xl shadow-slate-900/20 text-lg border border-slate-800">
+                    <i class="fa-solid fa-arrow-down mr-2 text-cyan-400"></i> 唯一的破局解法：100% 單一材質全回收設計
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="moat" class="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-20">
+            <div class="text-center max-w-3xl mx-auto mb-20 fade-up">
                 <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">The Ultimate Moat</span>
-                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-2 mb-6">終結廢棄與綠洗的科技鐵三角</h2>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-3 mb-6">終結廢棄與綠洗的科技鐵三角</h2>
                 <p class="text-lg text-slate-600 leading-relaxed">
                     我們不是傳統制服代工廠，我們透過材料科學、智財防護與逆向物流工程，為企業打造具備「國際紅點美學與閉環數據」的精品級科技服務。
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 transition duration-300 group">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Tech 1 -->
+                <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 transition duration-300 group fade-up">
                     <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-8 group-hover:scale-110 transition duration-300">
                         <i class="fa-solid fa-recycle text-3xl text-blue-500"></i>
                     </div>
                     <h3 class="text-2xl font-black text-slate-950 mb-4">100% 單一材質<br><span class="text-lg font-bold text-slate-500 font-mono mt-1 block">Mono-Material Design</span></h3>
-                    <p class="text-slate-600 leading-relaxed mb-6">
-                        摒棄傳統混紡，從主布料、縫紉線到隱藏式輔料，全數採用 100% PET (聚酯纖維)。這意味著退役制服無需耗費龐大人工剪除拉鍊與縫線，即可直接絞碎還原成高品質 rPET 酯粒。
+                    <p class="text-slate-600 leading-relaxed">
+                        摒棄傳統混紡，從主布料、縫紉線到隱藏式輔料，全數採用 100% PET (聚酯纖維)。這意味著退役制服無需耗費龐大人工剪除拉鍊與縫線，即可直接交由<strong>遠東新/寶綠特</strong>絞碎還原成高品質 rPET 酯粒。
                     </p>
                 </div>
 
-                <div class="bg-slate-950 rounded-3xl p-10 shadow-2xl shadow-cyan-900/20 border border-slate-800 hover:-translate-y-2 transition duration-300 group relative overflow-hidden">
+                <!-- Tech 2 -->
+                <div class="bg-slate-950 rounded-3xl p-10 shadow-2xl shadow-cyan-900/20 border border-slate-800 hover:-translate-y-2 transition duration-300 group relative overflow-hidden fade-up stagger-1">
                     <div class="w-16 h-16 rounded-2xl bg-cyan-900/50 flex items-center justify-center mb-8 border border-cyan-800 group-hover:scale-110 transition duration-300 relative z-10">
                         <i class="fa-solid fa-shield-halved text-3xl text-cyan-400"></i>
                     </div>
                     <h3 class="text-2xl font-black text-white mb-4 relative z-10">專利無氟防潑水<br><span class="text-lg font-bold text-cyan-500 font-mono mt-1 block">PFAS-Free Technology</span></h3>
-                    <p class="text-slate-400 leading-relaxed mb-6 relative z-10">
-                        擁有東豐纖維獨家塗佈專利，在完全不使用有害氟化物的前提下，達到極致抗污效果。完美規避歐盟與全球化學品禁令，並透過國宸國際的專利網防護，確保技術唯一性。
+                    <p class="text-slate-400 leading-relaxed relative z-10">
+                        擁有東豐纖維獨家塗佈專利，在完全不使用有害氟化物的前提下達到極致抗污效果。完美規避歐盟 PFAS 禁令，並透過<strong>國宸國際商標事務所</strong>的專利網防護，確保供應鏈技術唯一性。
                     </p>
                 </div>
 
-                <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 transition duration-300 group">
+                <!-- Tech 3 -->
+                <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 transition duration-300 group fade-up stagger-2">
                     <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-8 group-hover:scale-110 transition duration-300">
                         <i class="fa-solid fa-route text-3xl text-emerald-500"></i>
                     </div>
                     <h3 class="text-2xl font-black text-slate-950 mb-4">閉環回收承諾<br><span class="text-lg font-bold text-slate-500 font-mono mt-1 block">Garment-to-Garment</span></h3>
-                    <p class="text-slate-600 leading-relaxed mb-6">
-                        我們提供的不是一次性買賣，而是完整的 CUaaS (企業零廢棄制服系統) 合約。承諾於合約期末統一回收舊制服交予造粒大廠，確保採購預算 100% 轉化為合規減碳實績。
+                    <p class="text-slate-600 leading-relaxed">
+                        我們提供的不是一次性買賣，而是完整的 CUaaS 年度合約。承諾於合約期末統一回收舊制服，確保企業採購預算 100% 轉化為合規減碳實績，徹底消滅「汰換即焚化」的綠洗風險。
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SaaS 與 ESG 報告附錄展示 -->
+    <section id="pros-cons" class="py-24 bg-white relative border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-up">
+                <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">Transparent Evaluation</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-3 mb-6">坦白局：擁抱「單一材質全回收」的優缺點</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    高階決策不只需要知道好處，更需要了解我們如何克服物理極限。以下是傳統混紡與 ULTRAFORM 系統的真實對照。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Pros (Advantages) -->
+                <div class="bg-cyan-50/50 border-2 border-cyan-400 rounded-3xl p-8 lg:p-10 shadow-lg fade-up">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-cyan-400 text-slate-950 rounded-full flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-950">絕對優勢 (Pros)</h3>
+                    </div>
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-circle-check text-cyan-500 mt-1 text-lg"></i>
+                            <div>
+                                <strong class="text-slate-900 block text-lg mb-1">真正 100% 閉環，告別焚化爐</strong>
+                                <p class="text-slate-600 text-sm leading-relaxed">因為連拉鍊、縫線都是 100% PET，舊制服不需人工剪除即可直接進爐造粒，徹底消滅範疇三廢棄物碳排。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-circle-check text-cyan-500 mt-1 text-lg"></i>
+                            <div>
+                                <strong class="text-slate-900 block text-lg mb-1">合規免責，無懼法規追殺</strong>
+                                <p class="text-slate-600 text-sm leading-relaxed">完全剔除 PFAS 等有毒化學物質，直接取得 OEKO-TEX 與 GRS 證書，完美避開歐盟最新法規與公關危機。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-circle-check text-cyan-500 mt-1 text-lg"></i>
+                            <div>
+                                <strong class="text-slate-900 block text-lg mb-1">ESG 數據賦能</strong>
+                                <p class="text-slate-600 text-sm leading-relaxed">將採購消耗轉化為會計師認可的 ISO 14067 減碳報告，制服預算直接變成企業永續財報上的亮點資產。</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cons & Mitigations (Disadvantages & Solutions) -->
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 lg:p-10 shadow-sm fade-up stagger-1 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-slate-200 text-slate-600 text-xs font-bold px-4 py-2 rounded-bl-xl">物理妥協與解法</div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-slate-800 text-white rounded-full flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid fa-balance-scale"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-950">缺點與克服方案 (Cons)</h3>
+                    </div>
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-triangle-exclamation text-slate-400 mt-1 text-lg"></i>
+                            <div>
+                                <strong class="text-slate-900 block text-base mb-1">初期建置成本較高</strong>
+                                <p class="text-slate-500 text-sm leading-relaxed mb-2">單一材質輔料與無氟塗佈的開模研發成本高於傳統快時尚成衣。</p>
+                                <div class="bg-white border border-slate-200 p-3 rounded-lg text-sm text-cyan-700 font-medium">
+                                    <span class="text-cyan-500 mr-1">💡 解法：</span>將預算從「總務消耗品」轉列為「ESG 永續投資」，並透過極高耐用度延長使用壽命來攤提成本。
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-triangle-exclamation text-slate-400 mt-1 text-lg"></i>
+                            <div>
+                                <strong class="text-slate-900 block text-base mb-1">極限延展性受限</strong>
+                                <p class="text-slate-500 text-sm leading-relaxed mb-2">禁用彈性紗（Spandex）導致布料無法像瑜珈服般隨意拉伸。</p>
+                                <div class="bg-white border border-slate-200 p-3 rounded-lg text-sm text-cyan-700 font-medium">
+                                    <span class="text-cyan-500 mr-1">💡 解法：</span>運用布料的「機械彈性（特殊十字斷面紗線）」與無結構立體剪裁設計，完美彌補活動空間。
+                                </div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fa-solid fa-triangle-exclamation text-slate-400 mt-1 text-lg"></i>
+                            <div>
+                                <strong class="text-slate-900 block text-base mb-1">防潑水持久度物理天花板</strong>
+                                <p class="text-slate-500 text-sm leading-relaxed mb-2">無氟塗層的抗油污與持久度，物理上略遜於有毒的傳統含氟塗層（如早期 GORE-TEX）。</p>
+                                <div class="bg-white border border-slate-200 p-3 rounded-lg text-sm text-cyan-700 font-medium">
+                                    <span class="text-cyan-500 mr-1">💡 解法：</span>DWR-ULTRA 技術已達 AATCC 22 標準，能滿足 90% 以上高端商務、科研與市區防護需求，取得環保與機能的最佳平衡。
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="esg-saas" class="py-24 mesh-bg relative overflow-hidden border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row gap-16 items-start">
                 
-                <!-- 左側：系統說明 -->
-                <div class="lg:w-1/2 text-left pt-8">
+                <!-- Left: System Description -->
+                <div class="lg:w-1/2 text-left pt-6 fade-up">
                     <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">SaaS Digital Twin & Compliance</span>
                     <h2 class="text-3xl md:text-5xl font-black text-slate-950 leading-[1.2] mt-4 mb-6">
                         一鍵匯出會計師需要的 <br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">ESG 減碳數據附錄</span>
                     </h2>
                     <p class="text-slate-600 text-lg leading-relaxed mb-8">
-                        我們解決了 CSO (永續長) 最頭痛的問題：有環保產品卻沒有數據。ULTRAFORM 提供專屬的「輕量級制服碳存摺」SaaS 系統，將實體的回收件數，自動轉換為符合 ISO 14067 方法學的減碳當量。
+                        解決 CSO（永續長）最頭痛的問題：有環保產品卻沒有具體數據。ULTRAFORM 搭配專屬「制服碳存摺」SaaS 後台，自動將實體回收件數，轉換為符合 ISO 14067 方法學的範疇三減碳當量。
                     </p>
                     
                     <ul class="space-y-6">
@@ -195,7 +453,7 @@
                             </div>
                             <div>
                                 <strong class="text-slate-950 block text-lg mb-1">數位產品護照 (DPP Ready)</strong>
-                                <span class="text-slate-600 text-sm">結合耐高溫洗滌 RFID 標籤，追蹤單件制服使用壽命與期末回收狀態，防堵綠洗。</span>
+                                <span class="text-slate-600 text-sm">結合耐高溫洗滌 RFID 標籤，追蹤單件制服使用壽命與期末回收狀態，建立逆向物流，防堵漂綠。</span>
                             </div>
                         </li>
                         <li class="flex items-start gap-4">
@@ -204,72 +462,73 @@
                             </div>
                             <div>
                                 <strong class="text-slate-950 block text-lg mb-1">實體驗證文件包 (Audit-Ready)</strong>
-                                <span class="text-slate-600 text-sm">年底自動打包 Oeko-Tex 無氟證明、GRS 追溯聲明，以及造粒廠開立的正式「實體回收證明」。</span>
+                                <span class="text-slate-600 text-sm">年底系統一鍵打包 Oeko-Tex 無氟證明、GRS 追溯聲明，以及造粒廠開立的正式「實體回收證明」，免去人工搜集資料的痛苦。</span>
                             </div>
                         </li>
                     </ul>
                 </div>
                 
-                <!-- 右側：模擬生成的 ESG 報告書附錄 -->
-                <div class="lg:w-1/2 w-full perspective-1000">
+                <!-- Right: Simulated ESG Report Appendix -->
+                <div class="lg:w-1/2 w-full perspective-1000 fade-up stagger-1">
                     <div class="bg-white p-8 rounded-lg paper-shadow border border-slate-200 transform hover:scale-[1.02] transition duration-500 relative">
-                        <!-- 裝飾用圖章 -->
-                        <div class="absolute top-10 right-10 w-24 h-24 border-4 border-red-500/20 rounded-full flex items-center justify-center transform rotate-12 pointer-events-none">
-                            <span class="text-red-500/30 font-bold text-xs text-center leading-tight">ISO 14067<br>VERIFIED</span>
+                        <!-- Watermark -->
+                        <div class="absolute top-12 right-6 w-28 h-28 border-4 border-red-500/10 rounded-full flex items-center justify-center transform rotate-12 pointer-events-none">
+                            <span class="text-red-500/20 font-bold text-sm text-center leading-tight">ISO 14067<br>VERIFIED</span>
                         </div>
                         
                         <div class="border-b-2 border-slate-900 pb-4 mb-6">
                             <h4 class="font-serif text-2xl font-black text-slate-900">ESG Sustainability Report Appendix</h4>
-                            <p class="text-sm font-mono text-slate-500 mt-1">Document Ref: ULTRA-2026-TSMC-001</p>
+                            <p class="text-sm font-mono text-slate-500 mt-1">Document Ref: ULTRA-2026-DEMO-001</p>
                         </div>
                         
                         <div class="space-y-6 text-sm">
                             <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-md border border-slate-100">
-                                <div><span class="text-slate-500 text-xs block">客戶名稱 Client</span><strong class="text-slate-900">台積電 (TSMC) 廠務部</strong></div>
+                                <div><span class="text-slate-500 text-xs block">客戶名稱 Client</span><strong class="text-slate-900">某科技製造業（示範）</strong></div>
                                 <div><span class="text-slate-500 text-xs block">專案週期 Period</span><strong class="text-slate-900">FY-2026</strong></div>
-                                <div><span class="text-slate-500 text-xs block">導入方案 Program</span><strong class="text-slate-900">ULTRAFORM Tech Lab Coat</strong></div>
+                                <div><span class="text-slate-500 text-xs block">導入方案 Program</span><strong class="text-slate-900">Tech Lab Coat 科技罩衫</strong></div>
                                 <div><span class="text-slate-500 text-xs block">期末回收率 Recovery Rate</span><strong class="text-cyan-600 font-bold text-lg">98.5%</strong></div>
                             </div>
                             
                             <div>
                                 <h5 class="font-bold text-slate-900 mb-2 border-b border-slate-200 pb-1">1. 範疇三減碳當量核算 (Scope 3 GHG Reductions)</h5>
-                                <table class="w-full text-left font-mono text-xs">
+                                <table class="w-full text-left font-mono text-xs mt-2">
                                     <tr class="text-slate-500 border-b border-slate-100">
-                                        <th class="py-2">Item</th>
-                                        <th class="py-2">Baseline (Linear)</th>
-                                        <th class="py-2">ULTRAFORM (Circular)</th>
+                                        <th class="py-2">評估項目</th>
+                                        <th class="py-2">傳統線性 (基線)</th>
+                                        <th class="py-2">ULTRAFORM (閉環)</th>
                                     </tr>
                                     <tr class="border-b border-slate-50">
-                                        <td class="py-2">Cat 1: Purchased Goods</td>
-                                        <td class="py-2">7.2 kg CO2e/pc</td>
-                                        <td class="py-2 text-cyan-600 font-bold">4.1 kg CO2e/pc</td>
+                                        <td class="py-2.5">Cat 1: 採購商品</td>
+                                        <td class="py-2.5">7.2 kg CO₂e/件</td>
+                                        <td class="py-2.5 text-cyan-600 font-bold">4.1 kg CO₂e/件</td>
                                     </tr>
                                     <tr class="border-b border-slate-50">
-                                        <td class="py-2">Cat 12: End-of-Life (Incineration)</td>
-                                        <td class="py-2">2.7 kg CO2e/pc</td>
-                                        <td class="py-2 text-cyan-600 font-bold">0.0 kg CO2e/pc</td>
+                                        <td class="py-2.5">Cat 12: 廢棄物處理</td>
+                                        <td class="py-2.5">2.7 kg CO₂e/件</td>
+                                        <td class="py-2.5 text-cyan-600 font-bold">0.0 kg CO₂e/件</td>
                                     </tr>
                                 </table>
-                                <div class="mt-3 bg-cyan-50 p-3 rounded text-cyan-900 font-bold text-sm">
-                                    年度專案總減碳量 (Total Savings): <span class="text-xl">12.37 tCO₂e</span>
+                                <div class="mt-3 bg-cyan-50 border border-cyan-100 p-3 rounded flex justify-between items-center text-cyan-900">
+                                    <span class="font-bold text-sm">年度專案總減碳量 (Total Savings):</span>
+                                    <span class="text-xl font-black">12.37 tCO₂e</span>
                                 </div>
                             </div>
                             
                             <div>
-                                <h5 class="font-bold text-slate-900 mb-2 border-b border-slate-200 pb-1">2. 實體回收與化學品聲明 (Physical & Chemical Compliance)</h5>
-                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
-                                    <li>避免進入焚化爐總重量：<strong class="text-slate-900">1,250 kg (已交由 寶綠特 Boretech 驗收造粒)</strong></li>
-                                    <li>無氟 (PFAS-Free) 聲明：符合 OEKO-TEX Standard 100 Annex 4 標準。</li>
+                                <h5 class="font-bold text-slate-900 mb-2 border-b border-slate-200 pb-1">2. 實體回收與化學品聲明 (Compliance Status)</h5>
+                                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1.5 mt-2">
+                                    <li>避免進入焚化爐總重量：<strong class="text-slate-900">1,250 kg (已交由寶綠特/遠東新造粒)</strong></li>
+                                    <li>無氟 (PFAS-Free) 聲明：符合 OEKO-TEX Standard 100 Annex 4。</li>
                                 </ul>
                             </div>
                         </div>
                         
                         <div class="mt-8 pt-4 border-t border-slate-200 flex justify-between items-end">
-                            <div class="w-24 h-24 bg-slate-100 p-2"><img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://ultraform.tw/verify/TSMC-001" alt="Verification QR" class="w-full opacity-70"></div>
+                            <div class="w-20 h-20 bg-slate-100 p-1.5 rounded"><img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://ultraform.tw/verify/DEMO-001" alt="Verification QR" class="w-full opacity-80"></div>
                             <div class="text-right">
-                                <p class="text-xs text-slate-500 mb-1">Generated by ULTRAFORM CUaaS System</p>
-                                <button class="px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded shadow-lg hover:bg-cyan-500 transition">
-                                    <i class="fa-solid fa-download"></i> 下載核准 PDF 供會計師查核
+                                <p class="text-xs text-slate-500 mb-2 italic">※ 此為 SaaS 系統匯出之模擬預覽圖</p>
+                                <button class="px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded shadow-lg hover:bg-cyan-500 transition duration-300">
+                                    <i class="fa-solid fa-download mr-1"></i> 下載 PDF 報表供會計師查核
                                 </button>
                             </div>
                         </div>
@@ -280,103 +539,194 @@
         </div>
     </section>
 
-    <!-- 高階 B2B 目標市場 -->
     <section id="market" class="py-24 bg-white relative">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">Target Markets</span>
-                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-2 mb-6">B2B 首發產品矩陣</h2>
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-up">
+                <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">Strategic Markets</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-3 mb-6">B2B 首發產品矩陣</h2>
                 <p class="text-lg text-slate-600 leading-relaxed">
-                    捨棄大眾款式，我們優先鎖定「高污損、高預算、高美學要求」的巨獸級企業，以極簡侘寂風格進行降維打擊。
+                    捨棄公版款式，我們優先鎖定「高污損、高預算、高美學要求」的旗艦企業，以極簡侘寂風格與黑科技機能進行降維打擊。
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <!-- Product 1 -->
-                <div class="group relative overflow-hidden rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-2xl transition duration-500">
+                <!-- Product 1: Tech Lab Coat -->
+                <div class="group relative overflow-hidden rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-2xl transition duration-500 fade-up">
                     <div class="h-64 overflow-hidden relative">
                         <div class="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition duration-500 z-10"></div>
-                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop" onerror="this.onerror=null;this.src='https://placehold.co/800x600/0f172a/22d3ee?text=Tech+Lab'" alt="Tech Lab" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
-                        <div class="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-800">第一優先進攻</div>
+                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop" 
+                             onerror="this.onerror=null;this.innerHTML='<div class=\'w-full h-full bg-slate-800 flex items-center justify-center text-cyan-400 font-black text-3xl\'>Tech Lab Coat</div>'" 
+                             alt="Tech Lab Coat" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700 filter grayscale-[20%] group-hover:grayscale-0">
+                        <div class="absolute top-4 left-4 z-20 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-slate-800 shadow-sm">
+                            第一優先進攻 · 醫療與科研
+                        </div>
                     </div>
                     <div class="p-8">
-                        <h3 class="text-2xl font-black text-slate-950 mb-2">Tech Lab / Care 科技工作罩衫</h3>
-                        <p class="text-cyan-600 font-bold text-sm mb-4">目標客戶群：台積電、ASML廠務、頂級醫美健檢</p>
+                        <h3 class="text-2xl font-black text-slate-950 mb-1">Tech Lab / Care 科技工作罩衫</h3>
+                        <p class="font-mono text-xs text-slate-400 mb-4 tracking-widest">TECH LAB COAT — WABI-SABI EDITION</p>
+                        <p class="text-cyan-600 font-bold text-sm mb-4">目標客戶：台積電等科技廠務、頂級醫美健檢、研發實驗室</p>
                         <p class="text-slate-600 text-sm leading-relaxed mb-6">
-                            融入日式 Wabi-Sabi 減法美學，改用隱藏式 PET 壓釦。單一材質耐高溫洗滌，無氟塗層強效抵抗藥劑與化學液體潑濺。用紅點科技布料，包裝最高階的醫護與研發人才。
+                            融入日式 Wabi-Sabi 減法美學，改用隱藏式 PET 壓釦。單一材質耐高溫洗滌，專利無氟塗層強效抵抗化學液體與藥劑潑濺。用紅點科技布料，包裝最高階的醫護與研發人才。
                         </p>
+                        <div class="flex gap-2 text-xs font-bold text-slate-500">
+                            <span class="bg-slate-200/50 px-3 py-1 rounded">100% 回收免拆解</span>
+                            <span class="bg-slate-200/50 px-3 py-1 rounded">取代笨重傳統白袍</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Product 2 -->
-                <div class="group relative overflow-hidden rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-2xl transition duration-500">
-                    <div class="h-64 overflow-hidden relative bg-slate-200">
+                <!-- Product 2: Tech Blazer -->
+                <div class="group relative overflow-hidden rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-2xl transition duration-500 fade-up stagger-1">
+                    <div class="h-64 overflow-hidden relative bg-slate-900">
                         <div class="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition duration-500 z-10"></div>
-                        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1000&auto=format&fit=crop" onerror="this.onerror=null;this.innerHTML='<div class=\'w-full h-full bg-slate-900 flex items-center justify-center text-cyan-400 font-black text-3xl\'>Tech Blazer</div>'" alt="Tech Blazer" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+                        <!-- Updated reliable image URL -->
+                        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1000&auto=format&fit=crop" 
+                             onerror="this.onerror=null;this.outerHTML='<div class=\'w-full h-full bg-slate-900 flex items-center justify-center text-cyan-400 font-black text-4xl tracking-tight\'>[ Tech Blazer ]</div>'" 
+                             alt="Tech Blazer" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700 filter grayscale-[20%] group-hover:grayscale-0">
+                        <div class="absolute top-4 left-4 z-20 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-slate-800 shadow-sm">
+                            高預算 · 商務與精品服務
+                        </div>
                     </div>
                     <div class="p-8">
-                        <h3 class="text-2xl font-black text-slate-950 mb-2">Tech Blazer 極簡無結構西裝</h3>
-                        <p class="text-cyan-600 font-bold text-sm mb-4">目標客戶群：保時捷展間、大型金控集團、精品酒店</p>
+                        <h3 class="text-2xl font-black text-slate-950 mb-1">Tech Blazer 極簡無結構西裝</h3>
+                        <p class="font-mono text-xs text-slate-400 mb-4 tracking-widest">TECH BLAZER — UNSTRUCTURED FIT</p>
+                        <p class="text-cyan-600 font-bold text-sm mb-4">目標客戶：保時捷新能源展間、大型金控集團、精品酒店</p>
                         <p class="text-slate-600 text-sm leading-relaxed mb-6">
-                            取消傳統西裝複雜的異材質內襯與墊肩，純粹依賴布料垂墜感進行立體剪裁。咖啡潑濺瞬間滑落不留痕，讓前線商務人員隨時保持頂級專業形象，具備機械彈性極易活動。
+                            取消傳統西裝複雜的異材質內襯與墊肩，純粹依賴布料垂墜感進行立體剪裁。咖啡潑濺瞬間滑落不留痕，讓第一線商務人員隨時保持頂級專業形象，且具備機械彈性極易活動。
                         </p>
+                        <div class="flex gap-2 text-xs font-bold text-slate-500">
+                            <span class="bg-slate-200/50 px-3 py-1 rounded">解決西裝難洗易皺</span>
+                            <span class="bg-slate-200/50 px-3 py-1 rounded">提升企業創新形象</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 變現模式與獲利引擎 -->
-    <section id="business-model" class="py-24 bg-slate-50 relative border-t border-slate-200">
+    <section id="revenue" class="py-24 bg-slate-50 relative border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-up">
                 <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">Revenue Engine</span>
-                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-2 mb-6">這門生意怎麼賺錢？</h2>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-3 mb-6">這門生意怎麼賺錢？</h2>
                 <p class="text-lg text-slate-600 leading-relaxed">
-                    我們賺取的不是傳統成衣代工的微薄毛利，而是企業每年編列、且必須消耗的高額「ESG 永續發展與碳盤查預算」。
+                    我們不賺傳統成衣代工的微薄毛利，而是賺取企業每年編列且必須消耗的「ESG 永續發展與碳盤查預算」。
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col h-full relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-slate-100 text-slate-500 text-xs font-bold px-4 py-1 rounded-bl-xl">Tier 1 基礎毛利</div>
-                    <h3 class="text-xl font-bold text-slate-950 mb-2 mt-4">高階制服客製專案</h3>
-                    <div class="text-2xl font-black text-cyan-600 mb-4">Make-to-Order</div>
+                <!-- Tier 1 -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col h-full relative overflow-hidden fade-up">
+                    <div class="absolute top-0 right-0 bg-slate-100 text-slate-500 text-xs font-bold px-4 py-1.5 rounded-bl-xl">Tier 1 · 基礎毛利</div>
+                    <h3 class="text-xl font-bold text-slate-950 mb-1 mt-4">高階制服客製專案</h3>
+                    <div class="text-lg font-black text-cyan-600 mb-4 font-mono">Make-to-Order (BTO)</div>
                     <p class="text-slate-600 text-sm leading-relaxed flex-grow">
-                        鎖定高預算產業，以「紅點設計 + 無氟專利」產生品牌溢價。採接單生產（BTO），收取 50% 訂金，<strong class="text-slate-900">零庫存風險，現金流極度健康。</strong>
+                        鎖定高預算產業，以「紅點設計 + 無氟專利」產生品牌溢價。採接單生產，收取 50% 訂金，零庫存風險，現金流極度健康。
                     </p>
                 </div>
 
-                <div class="bg-white rounded-3xl p-8 border-2 border-cyan-400 shadow-lg relative transform md:-translate-y-4 flex flex-col h-full">
-                    <div class="absolute top-0 right-0 bg-cyan-400 text-slate-950 text-xs font-black px-4 py-1 rounded-bl-xl">Tier 2 經常性收入</div>
-                    <h3 class="text-xl font-bold text-slate-950 mb-2 mt-4">期末回收與追蹤服務</h3>
-                    <div class="text-2xl font-black text-cyan-600 mb-4">Take-Back Program</div>
+                <!-- Tier 2 -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-cyan-400 shadow-lg relative transform md:-translate-y-4 flex flex-col h-full fade-up stagger-1">
+                    <div class="absolute top-0 right-0 bg-cyan-400 text-slate-950 text-xs font-black px-4 py-1.5 rounded-bl-xl">Tier 2 · 經常性收入</div>
+                    <h3 class="text-xl font-bold text-slate-950 mb-1 mt-4">期末回收與追蹤服務</h3>
+                    <div class="text-lg font-black text-cyan-600 mb-4 font-mono">Annual Recurring Revenue</div>
                     <p class="text-slate-600 text-sm leading-relaxed flex-grow">
-                        與企業簽訂年度合約。每件衣服嵌入 RFID 標籤，年末收取「清點、物流與造粒回收」之處理服務費，形成強大客戶黏著度與穩定經常性收入 (ARR)。
+                        與企業簽訂年度合約。每件衣服嵌入 RFID，年末收取「清點、物流與造粒回收」處理服務費，形成強大客戶黏著度與 ARR。
                     </p>
                 </div>
 
-                <div class="bg-slate-950 rounded-3xl p-8 border border-slate-800 shadow-xl flex flex-col h-full relative">
-                    <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl">Tier 3 顧問數據紅利</div>
-                    <h3 class="text-xl font-bold text-white mb-2 mt-4">ESG 查核文件與聯名專利</h3>
-                    <div class="text-2xl font-black text-blue-400 mb-4">Compliance & IP</div>
+                <!-- Tier 3 -->
+                <div class="bg-slate-950 rounded-3xl p-8 border border-slate-800 shadow-xl flex flex-col h-full relative fade-up stagger-2">
+                    <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">Tier 3 · 數據紅利</div>
+                    <h3 class="text-xl font-bold text-white mb-1 mt-4">ESG 查核文件與聯名</h3>
+                    <div class="text-lg font-black text-blue-400 mb-4 font-mono">Compliance & IP Advisory</div>
                     <p class="text-slate-400 text-sm leading-relaxed flex-grow">
-                        最高毛利來源。為企業出具 ISO 14067 合規報告，甚至為指標大廠提供「專屬防護服專利聯名申請」服務，將雙方利益深度鎖死。
+                        最高毛利來源。出具 ISO 14067 合規報告，甚至為指標大廠提供「專屬防護服專利聯名申請」服務，將雙方利益深度鎖死。
                     </p>
                 </div>
             </div>
         </div>
     </section>
+    
+    <section id="pricing" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-up">
+                <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">Pricing Strategy</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-3 mb-6">合適的企業導入方案</h2>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    從示範計畫到企業長約，提供最符合您集團規模的切入點。
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                <!-- Pilot Plan -->
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 hover:shadow-lg transition duration-300 fade-up">
+                    <div class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Pilot</div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-4">先鋒示範計畫</h3>
+                    <div class="flex items-baseline gap-2 mb-6">
+                        <span class="text-4xl font-black text-slate-900">50件起</span>
+                        <span class="text-sm text-slate-500">/ 初始採購</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-6 pb-6 border-b border-slate-200">適合：想先驗證 ESG 報告品質，進行跨部門概念驗證（POC）的企業。</p>
+                    <ul class="space-y-4 text-sm text-slate-600 font-medium mb-8">
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>高階制服客製設計（雙款式）</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>RFID 建檔與碳存摺系統導入</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>期末基礎回收服務（乙次）</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>ISO 14067 試算報告</li>
+                    </ul>
+                    <a href="#contact" class="block w-full py-3.5 px-4 bg-white border-2 border-slate-900 text-slate-900 text-center font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">諮詢 Pilot 方案</a>
+                </div>
+                
+                <!-- Standard Plan (Featured) -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl transform md:scale-105 relative z-10 fade-up stagger-1">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase">最多企業選擇</div>
+                    <div class="text-sm font-bold text-cyan-400 uppercase tracking-widest mb-2 mt-2">Standard</div>
+                    <h3 class="text-2xl font-black text-white mb-4">企業年約方案</h3>
+                    <div class="flex items-baseline gap-2 mb-6">
+                        <span class="text-4xl font-black text-white">200件起</span>
+                        <span class="text-sm text-slate-400">/ 年度合約</span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6 pb-6 border-b border-slate-700">適合：需要完整稽核文件與閉環保證的上市櫃企業。</p>
+                    <ul class="space-y-4 text-sm text-slate-300 font-medium mb-8">
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>全款式客製設計（無限制）</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>RFID 全程追蹤 + 雲端碳存摺</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>年末完整回收 + 造粒實體驗證</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>ISO 14067 完整合規報告包</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-400 mt-0.5"></i>GRS 追溯聲明 + Oeko-Tex 文件</li>
+                    </ul>
+                    <a href="#contact" class="block w-full py-3.5 px-4 bg-cyan-400 text-slate-950 text-center font-black rounded-xl hover:bg-cyan-300 transition shadow-[0_0_15px_rgba(34,211,238,0.4)]">預約提案會議</a>
+                </div>
+                
+                <!-- Enterprise Plan -->
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 hover:shadow-lg transition duration-300 fade-up stagger-2">
+                    <div class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Enterprise</div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-4">旗艦戰略合作</h3>
+                    <div class="flex items-baseline gap-2 mb-6">
+                        <span class="text-4xl font-black text-slate-900">500件起</span>
+                        <span class="text-sm text-slate-500">/ 深度綁定</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-6 pb-6 border-b border-slate-200">適合：需要建立 IP 護城河與供應鏈深度整合的跨國集團。</p>
+                    <ul class="space-y-4 text-sm text-slate-600 font-medium mb-8">
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>Standard 方案全部內容</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>專屬防護服聯名專利申請服務</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>數位產品護照 (DPP) 企業端部署</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-0.5"></i>供應鏈永續報告聯名公關背書</li>
+                    </ul>
+                    <a href="#contact" class="block w-full py-3.5 px-4 bg-white border-2 border-slate-900 text-slate-900 text-center font-bold rounded-xl hover:bg-slate-900 hover:text-white transition">洽談 Enterprise 合作</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- 尋找戰略合夥人 ( Win-Win 生態系 ) -->
     <section id="partnership" class="py-24 bg-gradient-to-br from-slate-900 to-slate-950 relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 -ml-32 -mb-32 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"></div>
+        <div class="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -ml-32 -mb-32 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
         
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
                 
-                <div class="lg:col-span-5 text-left">
+                <!-- Left: Narrative -->
+                <div class="lg:col-span-5 text-left fade-up">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold tracking-widest mb-6">
                         <i class="fa-solid fa-radar"></i> PARTNER WITH US
                     </div>
@@ -385,7 +735,7 @@
                         尋找<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">戰略合夥拼圖。</span>
                     </h2>
                     <p class="text-slate-400 text-lg leading-relaxed mb-8">
-                        ULTRAFORM 已具備東豐纖維的底層製造專利與國宸國際的智財護城河。我們不只要找資金，我們正在招募具備產業產能與資源的「戰略合夥人」，透過 Win-Win 利益綁定，共同吃下百億級的 ESG 採購大餅。
+                        ULTRAFORM 已具備東豐纖維的底層製造專利與國宸國際的智財護城河。我們正在招募具備產業產能與資源的「戰略合夥人」，透過 Win-Win 利益綁定，共同吃下百億級的 ESG 採購大餅。
                     </p>
                     
                     <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 backdrop-blur-sm">
@@ -393,43 +743,53 @@
                             <i class="fa-solid fa-hand-holding-dollar text-cyan-400"></i> 合夥人專屬權益 (Win-Win)
                         </h4>
                         <ul class="space-y-3 text-sm text-slate-300">
-                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-1"></i> <div>由我們免費協助合夥人申請改良製程專利，共享智財。</div></li>
-                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-1"></i> <div>掛名 2026 紅點獎官方永續技術夥伴，進駐頂級企業財報。</div></li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-1"></i> <div>免費協助合夥人申請改良製程專利，共享智財資產。</div></li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-1"></i> <div>掛名紅點獎官方永續技術夥伴，進駐頂級企業 ESG 報告。</div></li>
                             <li class="flex items-start gap-3"><i class="fa-solid fa-check text-cyan-500 mt-1"></i> <div>承諾提供 100% 絕對純淨廢料，大幅降低造粒廠處理成本。</div></li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- Right: Target Partners Grid -->
                 <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Partner 1: Recycler -->
-                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition backdrop-blur-md">
-                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mb-4 text-xl">
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition backdrop-blur-md fade-up stagger-1">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 mb-5 text-xl border border-blue-500/30">
                             <i class="fa-solid fa-recycle"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">循環工程與造粒大廠</h3>
-                        <p class="text-slate-400 text-sm mb-4">如果您能處理 100% PET 廢衣還原造粒。我們將為您提供最純淨無異材質的「實驗與展示級廢料」，共同向業界展示真正的『衣到衣』閉環技術。</p>
-                        <span class="text-xs font-mono text-blue-400 border border-blue-400/30 px-2 py-1 rounded">Target: 寶綠特、遠東新</span>
+                        <p class="text-slate-400 text-sm mb-5 leading-relaxed">我們提供 100% 純淨 PET 廢衣，無拉鍊縫線干擾。為您穩定廢料量、降本 20%，並獲得聯名 ESG 認證背書。</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs font-mono font-bold text-blue-400 bg-blue-400/10 border border-blue-400/30 px-2.5 py-1 rounded">🎯 寶綠特 Boretech</span>
+                            <span class="text-xs font-mono font-bold text-slate-400 bg-slate-800 border border-slate-700 px-2.5 py-1 rounded">遠東新 (FENC)</span>
+                        </div>
                     </div>
 
-                    <!-- Partner 2: Garment & Trims -->
-                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition backdrop-blur-md">
-                        <div class="w-12 h-12 rounded-full bg-cyan-400/20 flex items-center justify-center text-cyan-400 mb-4 text-xl">
+                    <!-- Partner 2: Trims & Garments -->
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition backdrop-blur-md fade-up stagger-2">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-400/20 flex items-center justify-center text-cyan-400 mb-5 text-xl border border-cyan-400/30">
                             <i class="fa-solid fa-industry"></i>
                         </div>
                         <h3 class="text-xl font-bold text-white mb-2">機能成衣與全聚酯輔料廠</h3>
-                        <p class="text-slate-400 text-sm mb-4">若您具備無縫熱壓貼合產能，或能生產 100% PET 隱形拉鍊/高張力縫線。我們將協助您取得獨家車縫專利，並為您的材料提供頂級企業展示舞台。</p>
-                        <span class="text-xs font-mono text-cyan-400 border border-cyan-400/30 px-2 py-1 rounded">Target: 宏信、百和、得溢</span>
+                        <p class="text-slate-400 text-sm mb-5 leading-relaxed">協助申請獨家車縫專利，並提供直接接觸頂級企業的採購通道，從「傳統代工」升級為「專利認證廠」。</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs font-mono font-bold text-cyan-400 bg-cyan-400/10 border border-cyan-400/30 px-2.5 py-1 rounded">🎯 宏信拉鍊 (KCC)</span>
+                            <span class="text-xs font-mono font-bold text-slate-400 bg-slate-800 border border-slate-700 px-2.5 py-1 rounded">百和工業</span>
+                        </div>
                     </div>
 
-                    <!-- Partner 3: Capital & Sales -->
-                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition backdrop-blur-md md:col-span-2 flex flex-col md:flex-row gap-6 items-center">
-                        <div class="w-12 h-12 flex-shrink-0 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">
-                            <i class="fa-solid fa-seedling"></i>
+                    <!-- Partner 3: Capital & Clients -->
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition backdrop-blur-md md:col-span-2 flex flex-col md:flex-row gap-6 items-center fade-up stagger-2">
+                        <div class="w-14 h-14 flex-shrink-0 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-2xl border border-emerald-500/30">
+                            <i class="fa-solid fa-chart-line"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-white mb-2">ESG 資本與旗艦示範客戶</h3>
-                            <p class="text-slate-400 text-sm mb-3">如果您是能直接對接上市櫃公司 CSO 的顧問公司，或是正在尋求合規減碳方案、願意展開百件示範計畫 (Pilot Program) 的先鋒企業領導者。</p>
-                            <span class="text-xs font-mono text-emerald-400 border border-emerald-400/30 px-2 py-1 rounded">Target: 台積電、星宇、保時捷、ESG創投</span>
+                            <h3 class="text-xl font-bold text-white mb-2">ESG 資本與旗艦示範客戶 (Pilot)</h3>
+                            <p class="text-slate-400 text-sm mb-4 leading-relaxed">需要 Scope 3 實質減碳數據，渴望擺脫「紙上碳權」的企業 CSO。我們提供 ISO14067 + 實體造粒雙重認證，文件直交會計師。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-400/30 px-2.5 py-1 rounded">🎯 科技製造業 CSO (如台積電)</span>
+                                <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-400/30 px-2.5 py-1 rounded">🎯 星宇/保時捷</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -438,34 +798,179 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <section id="roadmap" class="py-24 bg-white relative overflow-hidden border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 fade-up">
+                <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">Execution Plan</span>
+                <h2 class="text-3xl md:text-5xl font-black text-slate-950 mt-3">12 個月商業落地路線圖</h2>
+            </div>
+            
+            <div class="relative border-l-2 border-slate-200 ml-6 md:ml-1/2 space-y-12 pb-8">
+                <!-- Phase 0 -->
+                <div class="relative flex items-center mb-8 group fade-up">
+                    <div class="absolute -left-3.5 w-7 h-7 bg-cyan-400 rounded-full border-4 border-white shadow-md transition-transform group-hover:scale-125"></div>
+                    <div class="ml-10 bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-sm w-full md:w-[600px] hover:shadow-md transition">
+                        <span class="text-cyan-700 font-bold text-xs tracking-widest uppercase bg-cyan-100 px-2 py-1 rounded">Phase 0 (0-30 Days)</span>
+                        <h4 class="text-xl font-bold text-slate-950 mt-3 mb-2">建立商業武器庫與樣衣</h4>
+                        <p class="text-slate-600 text-sm">完成 MVP 樣衣打樣 (罩衫/西裝) 與 100% PET 輔料整合。送測無氟檢驗，整備 GRS/ISO14067 合規文件模板與回收 SOP。</p>
+                    </div>
+                </div>
+                <!-- Phase 1 -->
+                <div class="relative flex items-center mb-8 group fade-up stagger-1">
+                    <div class="absolute -left-3.5 w-7 h-7 bg-slate-300 rounded-full border-4 border-white transition-colors group-hover:bg-cyan-400"></div>
+                    <div class="ml-10 bg-white p-6 rounded-2xl border border-slate-100 w-full md:w-[600px] hover:shadow-md transition">
+                        <span class="text-slate-500 font-bold text-xs tracking-widest uppercase bg-slate-100 px-2 py-1 rounded">Phase 1 (Months 2-3)</span>
+                        <h4 class="text-xl font-bold text-slate-950 mt-3 mb-2">Pilot 示範計畫發動</h4>
+                        <p class="text-slate-600 text-sm">鎖定 3 家指標型企業 (高階醫療/半導體/交通)，進行 100-500 件封閉測試。部署數位標籤並追蹤污損報廢率。</p>
+                    </div>
+                </div>
+                <!-- Phase 2 -->
+                <div class="relative flex items-center mb-8 group fade-up stagger-2">
+                    <div class="absolute -left-3.5 w-7 h-7 bg-slate-300 rounded-full border-4 border-white transition-colors group-hover:bg-cyan-400"></div>
+                    <div class="ml-10 bg-white p-6 rounded-2xl border border-slate-100 w-full md:w-[600px] hover:shadow-md transition">
+                        <span class="text-slate-500 font-bold text-xs tracking-widest uppercase bg-slate-100 px-2 py-1 rounded">Phase 2 (Months 4-6)</span>
+                        <h4 class="text-xl font-bold text-slate-950 mt-3 mb-2">數據驗證與 ROI 產出</h4>
+                        <p class="text-slate-600 text-sm">取得減碳與管理實證數據 (如：每件使用週期延長率、清洗報廢率下降比)。產出具備財務 ROI 的 Industry Case Study。</p>
+                    </div>
+                </div>
+                <!-- Phase 3 -->
+                <div class="relative flex items-center group fade-up">
+                    <div class="absolute -left-3.5 w-7 h-7 bg-slate-300 rounded-full border-4 border-white transition-colors group-hover:bg-cyan-400"></div>
+                    <div class="ml-10 bg-white p-6 rounded-2xl border border-slate-100 w-full md:w-[600px] hover:shadow-md transition">
+                        <span class="text-slate-500 font-bold text-xs tracking-widest uppercase bg-slate-100 px-2 py-1 rounded">Phase 3 (Months 7-12)</span>
+                        <h4 class="text-xl font-bold text-slate-950 mt-3 mb-2">行業規模化與降維打擊</h4>
+                        <p class="text-slate-600 text-sm">對標大型集團年度採購週期，提早 6-9 個月進場攔截永續預算，啟動全台高階 B2B 市場拓展與閉環物流建置。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-24 bg-slate-50 relative">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 fade-up">
+                <span class="text-cyan-600 font-bold tracking-widest text-sm uppercase">F.A.Q</span>
+                <h2 class="text-3xl md:text-4xl font-black text-slate-950 mt-3">CSO 與採購主管常見問題</h2>
+            </div>
+            
+            <div class="space-y-4 fade-up stagger-1">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow transition">
+                    <button class="faq-q w-full px-6 py-5 text-left font-bold text-slate-900 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        <span>期末回收是否有第三方機構驗證？</span>
+                        <div class="faq-icon w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 flex-shrink-0"><i class="fa-solid fa-plus text-sm"></i></div>
+                    </button>
+                    <div class="faq-a px-6 text-sm text-slate-600 leading-relaxed">
+                        是的。回收流程由寶綠特（Boretech）等認證造粒廠開立正式「實體回收重量證明」，並附有廠商蓋章與批號追蹤。這份文件可直接作為 ISO 14067 Cat.12 減廢核算的實體憑證，會計師可直接查核，無需另行補件。
+                    </div>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="faq-item bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow transition">
+                    <button class="faq-q w-full px-6 py-5 text-left font-bold text-slate-900 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        <span>無氟防潑水的效果能維持多久？是否殘留有害化學物？</span>
+                        <div class="faq-icon w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 flex-shrink-0"><i class="fa-solid fa-plus text-sm"></i></div>
+                    </button>
+                    <div class="faq-a px-6 text-sm text-slate-600 leading-relaxed">
+                        東豐纖維無氟塗佈經過內部測試，在 50 次標準洗滌後仍達到 AATCC 22 標準 80 分以上（良好防潑水）。最重要的是，它完全符合 OEKO-TEX Standard 100 Annex 4 標準，不存在任何 PFAS 殘留風險，完美規避歐盟與全球企業的公關危機。
+                    </div>
+                </div>
+                <!-- FAQ Item 3 -->
+                <div class="faq-item bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow transition">
+                    <button class="faq-q w-full px-6 py-5 text-left font-bold text-slate-900 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        <span>我們的 SAP/Oracle 碳盤查模組能與你們的 SaaS 系統串接嗎？</span>
+                        <div class="faq-icon w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 flex-shrink-0"><i class="fa-solid fa-plus text-sm"></i></div>
+                    </button>
+                    <div class="faq-a px-6 text-sm text-slate-600 leading-relaxed">
+                        完全可以。ULTRAFORM 碳存摺系統提供標準 REST API，可與 SAP Sustainability 等主流平台串接。若貴公司不需 API，系統也支援 Excel / CSV 一鍵匯出，以及 PDF 正式文件包，確保數據可無縫導入您現有的碳盤查作業中。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer id="contact" class="bg-slate-950 py-24 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
-            <div class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mx-auto mb-6 shadow-inner border border-slate-800">
+            <div class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mx-auto mb-6 shadow-inner border border-slate-800 fade-up">
                 <i class="fa-solid fa-handshake-angle text-cyan-400 text-2xl"></i>
             </div>
-            <h2 class="text-3xl md:text-4xl font-black text-white mb-6">準備好重塑您的永續供應鏈了嗎？</h2>
-            <p class="text-slate-400 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">
+            <h2 class="text-3xl md:text-4xl font-black text-white mb-6 fade-up stagger-1">準備好重塑您的永續供應鏈了嗎？</h2>
+            <p class="text-slate-400 mb-10 max-w-2xl mx-auto text-lg leading-relaxed fade-up stagger-2">
                 這不是一件普通的衣服，這是企業應對反綠洗法規的終極防護網。<br>我們正在尋找準備改變產業的戰略合夥人，以及首批示範企業 (Pilot Partners)。
             </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <button class="px-10 py-4 bg-cyan-400 text-slate-950 font-bold rounded-full hover:bg-cyan-300 transition shadow-lg shadow-cyan-400/20 text-lg flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-handshake"></i> 洽談合夥人計畫 (Partner Pitch)
-                </button>
-                <button class="px-10 py-4 bg-slate-900 text-white font-bold rounded-full hover:bg-slate-800 transition border border-slate-800 text-lg flex items-center justify-center gap-2">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 fade-up stagger-2">
+                <a href="mailto:d721104@gmail.com?subject=洽談 ULTRAFORM 合夥人計畫" class="px-10 py-4 bg-cyan-400 text-slate-950 font-bold rounded-full hover:bg-cyan-300 transition shadow-lg shadow-cyan-400/20 text-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-handshake"></i> 洽談合夥人計畫
+                </a>
+                <a href="mailto:d721104@gmail.com?subject=預約 ULTRAFORM 企業零廢棄制服提案會議" class="px-10 py-4 bg-slate-900 text-white font-bold rounded-full hover:bg-slate-800 transition border border-slate-800 text-lg flex items-center justify-center gap-2">
                     <i class="fa-solid fa-briefcase"></i> 預約高階提案會議
-                </button>
+                </a>
             </div>
             
             <div class="mt-20 pt-8 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
-                <p>&copy; 2026 ULTRAFORM x Tung Feng x 國宸國際智財. All rights reserved.</p>
-                <div class="flex gap-4 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-cyan-400 transition">Privacy Policy</a>
-                    <a href="#" class="hover:text-cyan-400 transition">Terms of Service</a>
+                <p>&copy; 2026 ULTRAFORM CUaaS System. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0 font-medium">
+                    <a href="https://tiponet.tipo.gov.tw/" target="_blank" rel="noopener" class="hover:text-cyan-400 transition">TIPO 商標申請中 (25, 35, 42類)</a>
+                    <span class="text-slate-700">|</span>
+                    <span class="text-slate-500">東豐纖維 × 國宸國際智財</span>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script>
+        // FAQ Toggle Logic
+        function toggleFaq(btn) {
+            const item = btn.closest('.faq-item');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+            if (!isOpen) {
+                item.classList.add('open');
+                // Change icon from plus to times logic is handled via CSS rotation for smoothness
+            }
+        }
+
+        // Mobile Menu Toggle Logic
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const icon = mobileToggle.querySelector('i');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('open');
+            if (mobileMenu.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        mobileToggle.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if(mobileMenu.classList.contains('open')) toggleMenu();
+            });
+        });
+
+        // Intersection Observer for Scroll Animations (Fade-up)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    // Optional: Unobserve after animating once to keep it showing
+                    // observer.unobserve(e.target); 
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
